@@ -41,6 +41,7 @@
     <Compile Include="Source\Common\main.cs" />
     <Compile Include="Source\Common\PuzzleSolution.cs" />
     <Compile Include="Source\Common\PuzzleSolvers.cs" />
+    <Compile Include="Source\Day 01\CalibrationValue.cs" />
     <Compile Include="Source\Day 01\DayOneSolver.cs" />
   </ItemGroup>
   <ItemGroup>
