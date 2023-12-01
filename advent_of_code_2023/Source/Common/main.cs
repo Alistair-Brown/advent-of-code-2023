@@ -4,6 +4,8 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.IO;
+using System.Diagnostics;
 
 namespace AOC
 {
@@ -55,9 +57,19 @@ namespace AOC
                 dayAsString +
                 PuzzleSolvers.puzzleInputExtension;
 
+            // I'm only interested in the runtime of the solution itself, so do the file IO outside the timed
+            // block.
+            string[] puzzleInputLines = File.ReadAllLines(relativePath);
+
+            Stopwatch stopwatch = Stopwatch.StartNew();
+
             // Remember to convert 1-indexed day number to 0-index for array indexing
-            PuzzleSolution solution = PuzzleSolvers.puzzleSolvers[day - 1].SolvePuzzle(relativePath);
-            Console.WriteLine("Day " + dayAsString + ": " + solution.part_one + ", " + solution.part_two);
+            PuzzleSolution solution = PuzzleSolvers.puzzleSolvers[day - 1].SolvePuzzle(puzzleInputLines);
+
+            stopwatch.Stop();
+            TimeSpan executionTime = stopwatch.Elapsed;
+
+            Console.WriteLine($"Day {dayAsString}: {solution.part_one}, {solution.part_two} ({executionTime.Seconds}s {executionTime.Milliseconds}ms)");
         }
     }
 }

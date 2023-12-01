@@ -8,6 +8,6 @@ namespace AOC
 {
     internal interface IPuzzleSolver
     {
-        PuzzleSolution SolvePuzzle(string puzzle_input_filepath);
+        PuzzleSolution SolvePuzzle(string[] puzzle_input_lines);
     }
 }

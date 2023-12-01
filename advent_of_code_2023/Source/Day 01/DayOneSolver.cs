@@ -9,14 +9,12 @@ namespace AOC
 {
     internal class DayOneSolver : IPuzzleSolver
     {
-        public PuzzleSolution SolvePuzzle(string puzzle_input_filepath)
+        public PuzzleSolution SolvePuzzle(string[] puzzleInputLines)
         {
-            string[] inputLines = File.ReadAllLines(puzzle_input_filepath);
-
             ulong partOneSum = 0;
             ulong partTwoSum = 0;
 
-            foreach(string line in inputLines)
+            foreach(string line in puzzleInputLines)
             {
                 string digitOne = "0";
                 string digitTwo = "0";
@@ -41,7 +39,7 @@ namespace AOC
                 partOneSum += Convert.ToUInt64(digitOne + digitTwo);
             }
 
-            foreach (string line in inputLines)
+            foreach (string line in puzzleInputLines)
             {
                 string digitOne = "0";
                 string digitTwo = "0";
