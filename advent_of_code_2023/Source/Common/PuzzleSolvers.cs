@@ -12,7 +12,7 @@ namespace AOC
         public const string puzzleInputFileStem = "puzzle_input_";
         public const string puzzleInputExtension = ".txt";
 
-        public const int numberOfSolvers = 1;
-        static public IPuzzleSolver[] puzzleSolvers = new IPuzzleSolver[numberOfSolvers] { new DayOneSolver() };
+        public const int numberOfSolvers = 2;
+        static public IPuzzleSolver[] puzzleSolvers = new IPuzzleSolver[numberOfSolvers] { new DayOneSolver(), new DayTwoSolver() };
     }
 }

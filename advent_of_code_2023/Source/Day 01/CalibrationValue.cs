@@ -22,6 +22,11 @@ namespace AOC.DayOne
         private readonly string stringRepresentation;
         private readonly int stringLength;
 
+        // The presence of a calibration value (i.e. '3', or 'five' is detected by passing a character at a time into
+        // an instance of this class, incrementing the relevant one of these counts (for whether we're currently looking
+        // for leftmost or rightmost) if we continue to match the string, or resetting the count if we don't have match.
+        // Once we've matched characters for the full length of the string, we've found this calibration's string
+        // representation within the line.
         private int charactersMatchedFromLeft = 0;
         private int charactersMatchedFromRight = 0;
 
