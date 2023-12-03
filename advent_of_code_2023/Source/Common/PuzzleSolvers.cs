@@ -4,6 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using AOC.DayOne;
+using AOC.DayTwo;
+using AOC.DayThree;
+
 namespace AOC
 {
     internal static class PuzzleSolvers
@@ -12,7 +16,7 @@ namespace AOC
         public const string puzzleInputFileStem = "puzzle_input_";
         public const string puzzleInputExtension = ".txt";
 
-        public const int numberOfSolvers = 2;
-        static public IPuzzleSolver[] puzzleSolvers = new IPuzzleSolver[numberOfSolvers] { new DayOneSolver(), new DayTwoSolver() };
+        public const int numberOfSolvers = 3;
+        static public IPuzzleSolver[] puzzleSolvers = new IPuzzleSolver[numberOfSolvers] { new DayOneSolver(), new DayTwoSolver(), new DayThreeSolver() };
     }
 }

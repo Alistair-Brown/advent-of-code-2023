@@ -45,6 +45,8 @@
     <Compile Include="Source\Day 01\DayOneSolver.cs" />
     <Compile Include="Source\Day 02\CubeGame.cs" />
     <Compile Include="Source\Day 02\DayTwoSolver.cs" />
+    <Compile Include="Source\Day03\DayThreeSolver.cs" />
+    <Compile Include="Source\Day03\EnginePart.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -57,6 +59,7 @@
   <ItemGroup>
     <Content Include="puzzle_inputs\puzzle_input_01.txt" />
     <Content Include="puzzle_inputs\puzzle_input_02.txt" />
+    <Content Include="puzzle_inputs\puzzle_input_03.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
