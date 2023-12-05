@@ -15,7 +15,7 @@ namespace AOC.DayFour
         private List<int> numbersYouHave;
 
 
-        public Scratchcard(string inputLine) 
+        public Scratchcard(string inputLine)
         {
             char[] whiteSpace = new char[1] { ' ' };
 
