@@ -51,6 +51,7 @@
     <Compile Include="Source\Day04\Scratchcard.cs" />
     <Compile Include="Source\Day05\DayFiveSolver.cs" />
     <Compile Include="Source\Day05\GardenMap.cs" />
+    <Compile Include="Source\Day06\DaySixSolver.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -66,6 +67,7 @@
     <Content Include="puzzle_inputs\puzzle_input_03.txt" />
     <Content Include="puzzle_inputs\puzzle_input_04.txt" />
     <Content Include="puzzle_inputs\puzzle_input_05.txt" />
+    <Content Include="puzzle_inputs\puzzle_input_06.txt" />
     <Content Include="puzzle_inputs\puzzle_input_sratch_space.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
