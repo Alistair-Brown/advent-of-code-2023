@@ -52,6 +52,8 @@
     <Compile Include="Source\Day05\DayFiveSolver.cs" />
     <Compile Include="Source\Day05\GardenMap.cs" />
     <Compile Include="Source\Day06\DaySixSolver.cs" />
+    <Compile Include="Source\Day07\DaySevenSolver.cs" />
+    <Compile Include="Source\Day07\PokerHand.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -68,7 +70,9 @@
     <Content Include="puzzle_inputs\puzzle_input_04.txt" />
     <Content Include="puzzle_inputs\puzzle_input_05.txt" />
     <Content Include="puzzle_inputs\puzzle_input_06.txt" />
+    <Content Include="puzzle_inputs\puzzle_input_07.txt" />
     <Content Include="puzzle_inputs\puzzle_input_sratch_space.txt" />
+    <Content Include="puzzle_inputs\test_puzzle_input.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

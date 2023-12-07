@@ -33,7 +33,7 @@ namespace AOC
             return new PuzzleSolution(partOneWaysToWin.ToString(), partTwoWaysToWin.ToString());
         }
 
-        // To solve with O(n) complexity, we can solve a quadratic equation.
+        // To solve with O(1) complexity, we can solve a quadratic equation.
         // The optimal amount of time to hold the button down for is half the
         // total time. Hold down a ms longer you gain 1ms of speed to use in
         // ((time / 2) - 1) time, but lose 1ms of time to use the (time / 2) speed
