@@ -25,16 +25,16 @@ namespace AOC.DayEight
         }
     }
 
+    // Holds the result of traversing the entire line of LR instructions from a given
+    // start node.
     internal class MapRoute
     {
-        public readonly List<int> stepsToReachANodeEndingInZ;
         public readonly string startNode;
         public readonly string finalNode;
 
         public MapRoute(string startNode, string leftRightInstructions, Dictionary<string, MapNode> leftRightMap)
         {
             this.startNode = startNode;
-            stepsToReachANodeEndingInZ = new List<int>();
 
             string currentNode = startNode;
             int stepsTaken = 0;
@@ -45,11 +45,6 @@ namespace AOC.DayEight
                     leftRightMap[currentNode].rightNodeName;
 
                 ++stepsTaken;
-
-                if (currentNode[2] == 'Z')
-                {
-                    stepsToReachANodeEndingInZ.Add(stepsTaken);
-                }
             }
 
             finalNode = currentNode;

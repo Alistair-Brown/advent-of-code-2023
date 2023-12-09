@@ -17,11 +17,6 @@ namespace AOC
             {
                 foreach (int day in Enumerable.Range(1, PuzzleSolvers.numberOfSolvers))
                 {
-                    if (day == 8)
-                    {
-                        Console.WriteLine("Day 08: Needs fixing up, skip");
-                        continue;
-                    }
                     SolveDayAndPrintSolution(day);
                 }
             }

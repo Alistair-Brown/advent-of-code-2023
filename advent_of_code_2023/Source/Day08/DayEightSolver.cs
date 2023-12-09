@@ -13,29 +13,39 @@ namespace AOC
     {
         public PuzzleSolution SolvePuzzle(string[] puzzleInputLines)
         {
-            Dictionary<string, MapNode> leftRightMap = new Dictionary<string, MapNode>();
+            Dictionary<string, MapNode> mapNodesByName = new Dictionary<string, MapNode>();
 
             string leftRightInstructions = puzzleInputLines[0];
 
             for (int ii = 2; ii < puzzleInputLines.Length; ++ii)
             {
                 MapNode node = new MapNode(puzzleInputLines[ii]);
-                leftRightMap.Add(node.ownNodeName, node);
+                mapNodesByName.Add(node.ownNodeName, node);
             }
 
             // PartOne
+            ulong partOneStepsTaken = SolvePartOne(mapNodesByName, leftRightInstructions);
+            ulong partTwoStepsTaken = SolvePartTwo(mapNodesByName, leftRightInstructions);
+
+            return new PuzzleSolution(partOneStepsTaken.ToString(), partTwoStepsTaken.ToString());
+        }
+
+        // Just follow the LR instructions starting from AAA until we reach ZZZ, and return
+        // the number of steps it took to get there.
+        ulong SolvePartOne(Dictionary<string, MapNode> mapNodesByName, string leftRightInstructions)
+        {
             int currentLeftRightIndex = 0;
-            int partOneStepsTaken = 0;
+            ulong partOneStepsTaken = 0;
             string currentMapNodeName = "AAA";
             while (true)
             {
                 if (leftRightInstructions[currentLeftRightIndex] == 'L')
                 {
-                    currentMapNodeName = leftRightMap[currentMapNodeName].leftNodeName;
+                    currentMapNodeName = mapNodesByName[currentMapNodeName].leftNodeName;
                 }
                 else
                 {
-                    currentMapNodeName = leftRightMap[currentMapNodeName].rightNodeName;
+                    currentMapNodeName = mapNodesByName[currentMapNodeName].rightNodeName;
                 }
                 ++partOneStepsTaken;
 
@@ -45,253 +55,70 @@ namespace AOC
                 }
 
                 ++currentLeftRightIndex;
+
+                // If we reach the end of the instructions, wrap back to the start.
                 if (currentLeftRightIndex == leftRightInstructions.Length)
                 {
                     currentLeftRightIndex = 0;
                 }
             }
 
-            // PartTwo
-            List<string> partTwoStartingNodes = new List<string>();
-            foreach (string nodeName in leftRightMap.Keys)
+            return partOneStepsTaken;
+        }
+
+        ulong SolvePartTwo(Dictionary<string, MapNode> mapNodesByName, string leftRightInstructions)
+        {
+            List<string> partTwoStartingNodeNames = new List<string>();
+            foreach (string nodeName in mapNodesByName.Keys)
             {
                 if (nodeName[2] == 'A')
                 {
-                    partTwoStartingNodes.Add(nodeName);
+                    partTwoStartingNodeNames.Add(nodeName);
                 }
             }
 
-            // The A node isn't in the loop, so let's just make our LR instructions start at the second instruction,
-            // since that's the first one that's part of the actual loop.
-            leftRightInstructions += leftRightInstructions[0];
-            leftRightInstructions = leftRightInstructions.Remove(0, 1);
-
-            List<List<string>> eachStartingNodesSubseqentLoopStarts = new List<List<string>>();
-
-            foreach (string startingNode in partTwoStartingNodes)
+            // Running some tests and inspecting the output revealed some important things about the
+            // way our input is constructed:
+            //  - From a given node with a name ending in A, a node ending in Z is only ever reached
+            //    after executing a whole number of loops of the full LR instruction set, never halfway
+            //    through.
+            //  - After reaching the Z node, we perform one more complete loop of LR instructions, and then
+            //    end up back where we were AFTER the very first loop. That tells us that we will reach a
+            //    Z node every n loops of the LR instructions, where n is the number of loops it took us
+            //    us to reach it the first time.
+            //  - For my instruction input, the number of loops to go from A node to Z node was prime
+            //    in all cases, which must be a deliberate feature of the input.
+            //  - To find the first case where all paths converge on a Z node at once, we need the lowest
+            //    common multiple of all the n's. Since they're prime, this is just their product.
+            List<ulong> loopsToReachZForEachStartingA = new List<ulong>();
+            foreach (string startingNode in partTwoStartingNodeNames)
             {
-                List<string> startingNodes = new List<string>();
-
-                int index = leftRightInstructions.Length - 1;
-                Debug.Assert(leftRightMap.ContainsKey(startingNode));
-                string currentNode = leftRightInstructions[index] == 'L' ?
-                    leftRightMap[startingNode].leftNodeName :
-                    leftRightMap[startingNode].rightNodeName;
-
-                startingNodes.Add(currentNode);
-
+                string currentNodeName = startingNode;
+                ulong loopsTaken = 0;
+                
                 while (true)
                 {
-                    foreach (char instruction in leftRightInstructions)
-                    {
-                        currentNode = instruction == 'L' ?
-                            leftRightMap[currentNode].leftNodeName :
-                            leftRightMap[currentNode].rightNodeName;
-                    }
-
-                    if (startingNodes.Contains(currentNode))
-                    {
-                        eachStartingNodesSubseqentLoopStarts.Add(startingNodes);
-                        break;
-                    }
-                    else
-                    {
-                        startingNodes.Add(currentNode);
-                    }
-                }
-            }
-
-            Dictionary<string, MapRoute> mapRoutes = new Dictionary<string, MapRoute>();
-            List<string> currentLoopStartNodes = new List<string>();
-            foreach (List<string> loopStarts in eachStartingNodesSubseqentLoopStarts)
-            {
-                foreach (string loopStart in loopStarts)
-                {
-                    mapRoutes.Add(loopStart, new MapRoute(loopStart, leftRightInstructions, leftRightMap));
-                }
-            }
-
-            // Can just note that it's a condition of the input that a-z loops are closed and of the same
-            // length, so just LCM.
-
-            //currentLeftRightIndex = 0;
-            //int partTwoStepsTaken = 0;
-            //while (true)
-            //{
-            //    for (int ii = 0; ii < currentMapNodeNames.Count; ++ii)
-            //    {
-            //        if (leftRightInstructions[currentLeftRightIndex] == 'L')
-            //        {
-            //            currentMapNodeNames[ii] = leftRightMap[currentMapNodeNames[ii]].leftNodeName;
-            //        }
-            //        else
-            //        {
-            //            currentMapNodeNames[ii] = leftRightMap[currentMapNodeNames[ii]].rightNodeName;
-            //        }
-            //    }
-
-            //    ++partTwoStepsTaken;
-            //    ++currentLeftRightIndex;
-            //    if (currentLeftRightIndex == leftRightInstructions.Length)
-            //    {
-            //        currentLeftRightIndex = 0;
-            //    }
-
-            //    bool allEndWithZ = true;
-            //    foreach (string nodeName in currentMapNodeNames)
-            //    {
-            //        if (nodeName[2] != 'Z')
-            //        {
-            //            allEndWithZ = false;
-            //            break;
-            //        }
-            //    }
-
-            //    if (allEndWithZ)
-            //    {
-            //        break;
-            //    }
-            //}
-
-
-            // Part two again.
-            // If you just run the full LR input from each node, you've got a complete description
-            // of all possible routes, just need to mark how many indices from each start reaches a
-            // node that ends in Z.
-
-
-
-
-
-            ulong loopLength = (ulong)leftRightInstructions.Length;
-            ulong loopsTaken = 0;
-            ulong stepsIntoLoop = 0;
-            bool foundSolution = false;
-            //HashSet<string> goodNodes = new HashSet<string> { "bbk",
-            //                                                    "dkd",
-            //                                                    "jgt",
-            //                                                    "qtm",
-            //                                                    "qjn",
-            //                                                    "kfx",
-            //                                                    "hjm",
-            //                                                    "spc",
-            //                                                    "gkh",
-            //                                                    "bpt",
-            //                                                    "lbj",
-            //                                                    "dfj"};
-
-            //List<ulong> loopsLengths = new List<ulong>();
-            //foreach (string nodeName in currentLoopStartNodes)
-            //{
-            //    HashSet<string> visited = new HashSet<string>();
-            //    string currentNode = nodeName;
-            //    Console.WriteLine("NEW!!!!!!!!!!!!!!!!!!!");
-            //    Console.WriteLine(currentNode);
-            //    visited.Add(currentNode);
-            //    int loops = 0;
-            //    while (true)
-            //    {
-            //        loops++;
-            //        currentNode = mapRoutes[currentNode].finalNode;
-            //        Console.WriteLine(currentNode);
-            //        if (visited.Contains(currentNode))
-            //        {
-            //            loopsLengths.Add((ulong)loops - 1);
-            //            break;
-            //        }
-            //        else
-            //        {
-            //            visited.Add(currentNode);
-            //        }
-            //        //Console.WriteLine(currentNode);
-            //    }
-            //}
-
-            //// All of them take one step and then enter a loop of a known length
-            //// which ends in a z node.
-            //ulong total = loopsLengths[0];
-            //ulong loopsTwo = 0;
-            //while (true)
-            //{
-            //    ++loopsTwo;
-            //    total += loopsLengths[0];
-
-            //    if ((total % loopsLengths[1] == 0) &&
-            //        (total % loopsLengths[2] == 0) &&
-            //        (total % loopsLengths[3] == 0) &&
-            //        (total % loopsLengths[4] == 0) &&
-            //        (total % loopsLengths[5] == 0))
-            //    {
-            //        break;
-            //    }
-
-            //}
-
-            //// I'm on the right lines, but actually it's not a true loop until
-            //// we're back to the same node and LR index
-            //// Need to build a complete loop for each start position, noting:
-            //// - How many steps to reach the start of the loop
-            //// - How many steps long is the loop
-            //// - What the indices of z nodes within the loop
-            //Console.WriteLine(total);
-
-            while (true)
-            {
-                ++loopsTaken;
-                //int numGoodNodes = 0;
-                List<List<int>> zPositionsThisLoop = new List<List<int>>();
-                for (int ii = 0; ii < currentLoopStartNodes.Count; ++ii)
-                {
-                    //if (goodNodes.Contains(currentLoopStartNodes[ii]))
-                    //{
-                    //    numGoodNodes++;
-                    //}
-
-                    //Reset the start node names as we go, once we have their z positions for this
-
-                    //loop that's all we need.
-
-                   zPositionsThisLoop.Add(mapRoutes[currentLoopStartNodes[ii]].stepsToReachANodeEndingInZ);
-                   currentLoopStartNodes[ii] = mapRoutes[currentLoopStartNodes[ii]].finalNode;
-                }
-
-                //if (numGoodNodes == currentLoopStartNodes.Count)
-                //{
-                //    break;
-                //}
-
-                foreach (int zSteps in zPositionsThisLoop[0])
-                {
-                    foundSolution = true;
-                    for (int ii = 1; ii < zPositionsThisLoop.Count; ++ii)
-                    {
-                        if (!zPositionsThisLoop[ii].Contains(zSteps))
-                        {
-                            foundSolution = false;
-                            break;
-                        }
-                    }
-
-                    if (foundSolution)
-                    {
-                        stepsIntoLoop = (ulong)zSteps;
-                        break;
-                    }
-                }
-
-                if (foundSolution)
-                {
-                    break;
-                }
-                else
-                {
+                    currentNodeName = new MapRoute(currentNodeName, leftRightInstructions, mapNodesByName).finalNode;
                     ++loopsTaken;
+
+                    if (currentNodeName[2] == 'Z')
+                    {
+                        break;
+                    }
                 }
+
+                loopsToReachZForEachStartingA.Add(loopsTaken);
             }
 
-            ulong partTwoStepsTaken = (loopsTaken * loopLength) + stepsIntoLoop;
+            ulong loopsLCM = 1;
+            foreach (ulong loops in loopsToReachZForEachStartingA)
+            {
+                loopsLCM *= loops;
+            }
 
-            return new PuzzleSolution(partOneStepsTaken.ToString(), partTwoStepsTaken.ToString());
+            // To turn this number of loops into a number of steps, just multiply by the number of
+            // steps in a single loop
+            return loopsLCM * (ulong)leftRightInstructions.Length;
         }
     }
 }
