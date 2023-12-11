@@ -15,10 +15,12 @@ namespace AOC
         {
             if (args[0] == "all")
             {
+                TimeSpan totalTime = new TimeSpan(0);
                 foreach (int day in Enumerable.Range(1, PuzzleSolvers.numberOfSolvers))
                 {
-                    SolveDayAndPrintSolution(day);
+                    totalTime += SolveDayAndPrintSolution(day);
                 }
+                Console.WriteLine($"Total time: {totalTime.Seconds}s {totalTime.Milliseconds}ms");
             }
             else
             {
@@ -46,7 +48,7 @@ namespace AOC
             }
         }
 
-        private static void SolveDayAndPrintSolution(int day)
+        private static TimeSpan SolveDayAndPrintSolution(int day)
         {
             string dayAsString = day.ToString();
             if (dayAsString.Length == 1) { dayAsString = "0" + dayAsString; }
@@ -70,6 +72,8 @@ namespace AOC
             TimeSpan executionTime = stopwatch.Elapsed;
 
             Console.WriteLine($"Day {dayAsString}: {solution.part_one}, {solution.part_two} ({executionTime.Seconds}s {executionTime.Milliseconds}ms)");
+
+            return executionTime;
         }
     }
 }

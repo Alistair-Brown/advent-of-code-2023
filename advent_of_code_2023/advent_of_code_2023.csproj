@@ -60,6 +60,8 @@
     <Compile Include="Source\Day09\OasisValueHistory.cs" />
     <Compile Include="Source\Day10\DayTenSolver.cs" />
     <Compile Include="Source\Day10\PipeUtils.cs" />
+    <Compile Include="Source\Day11\DayElevenSolver.cs" />
+    <Compile Include="Source\Day11\Observatory.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -79,6 +81,7 @@
     <Content Include="puzzle_inputs\puzzle_input_07.txt" />
     <Content Include="puzzle_inputs\puzzle_input_09.txt" />
     <Content Include="puzzle_inputs\puzzle_input_10.txt" />
+    <Content Include="puzzle_inputs\puzzle_input_11.txt" />
     <Content Include="puzzle_inputs\puzzle_input_sratch_space.txt" />
     <Content Include="puzzle_inputs\puzzle_input_08.txt" />
     <Content Include="puzzle_inputs\test_puzzle_input.txt" />
