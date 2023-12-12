@@ -22,6 +22,19 @@ namespace AOC.DayTwelve
 
         Dictionary<(int stringIndex, int groupIndex), ulong> possibleArrangementsCache;
 
+        // For a given substring (portion of a total spring-string that is bounded by either
+        // '.' or the beginning and end, and a group of damaged string sizes that can
+        // theoretically fit into this string, returns a list of the number of ways you can
+        // arrange the damaged strings, for each number of the damaged springs that is contained
+        // in the group. First entry in the list is if you use no springs (will either be 1 or 0,
+        // depending on if the substring contains any hashes), the next is number of ways you could
+        // fit just the first element of the subgroup, etc.
+        // Not used anywhere yet, but I think I could get a speed-up by caching this kind of small
+        // scale information. Needs quite a rework to the way the rest of this class works before I
+        // can make use of it though.
+        static Dictionary<(string subString, List<int> subGroups),
+                   List<ulong>> subStringArrangements = new Dictionary<(string subString, List<int> subGroups), List<ulong>>();
+
         public HotSpring(string inputLine, bool partTwo)
         {
             string[] splitOnSpace = inputLine.Split(' ');
@@ -165,20 +178,6 @@ namespace AOC.DayTwelve
                 (springString[startingStringIndex + groupSize] == '#'))
             {
                 return false;
-            }
-
-            string insertedGroup = "";
-            for (int index = 0; index < startingStringIndex; ++index)
-            {
-                insertedGroup += '.';
-            }
-            for (int index = 0; index < groupSize; ++index)
-            {
-                insertedGroup += '#';
-            }
-            for (int index = startingStringIndex + groupSize; index < springString.Length; ++index)
-            {
-                insertedGroup += '.';
             }
 
             return true;
