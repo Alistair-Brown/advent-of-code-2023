@@ -64,6 +64,8 @@
     <Compile Include="Source\Day11\Observatory.cs" />
     <Compile Include="Source\Day12\DayTwelveSolver.cs" />
     <Compile Include="Source\Day12\HotSpring.cs" />
+    <Compile Include="Source\Day13\DayThirteenSolver.cs" />
+    <Compile Include="Source\Day13\MirrorField.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -85,6 +87,7 @@
     <Content Include="puzzle_inputs\puzzle_input_10.txt" />
     <Content Include="puzzle_inputs\puzzle_input_11.txt" />
     <Content Include="puzzle_inputs\puzzle_input_12.txt" />
+    <Content Include="puzzle_inputs\puzzle_input_13.txt" />
     <Content Include="puzzle_inputs\puzzle_input_sratch_space.txt" />
     <Content Include="puzzle_inputs\puzzle_input_08.txt" />
     <Content Include="puzzle_inputs\test_puzzle_input.txt" />
