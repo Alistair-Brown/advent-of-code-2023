@@ -20,8 +20,14 @@ namespace AOC.DayFourteen
 
         private char[][] rawBoulderField;
 
+        private List<ulong> northLoadAfterEachCycle;
+        private List<List<(int row, int column)>> boulderLocationsAfterEachCycle;
+
         public BoulderField(string[] inputLines)
         {
+            boulderLocationsAfterEachCycle = new List<List<(int row, int column)>>();
+            northLoadAfterEachCycle = new List<ulong>();
+
             rawBoulderField = new char[inputLines.Length][];
             for (int ii = 0; ii < inputLines.Length; ++ii)
             {
@@ -65,6 +71,9 @@ namespace AOC.DayFourteen
             PerformWestSlide();
             PerformSouthSlide();
             PerformEastSlide();
+
+            SaveBoulderState();
+            northLoadAfterEachCycle.Add(LoadOnNorthColumns());
         }
 
         public void PerformNorthSlide()
@@ -151,7 +160,52 @@ namespace AOC.DayFourteen
             }
         }
 
-        public ulong LoadOnNorthColumnPartTwo()
+        private void SaveBoulderState()
+        {
+            List<(int row, int column)> boulderPositions = new List<(int row, int column)> ();
+
+            for (int row = 0; row < rawBoulderField.Length; ++row)
+            {
+                for (int column = 0; column < rawBoulderField[0].Length; ++column)
+                {
+                    if (rawBoulderField[row][column] == 'O')
+                    {
+                        boulderPositions.Add((row, column));
+                    }
+                }
+            }
+            boulderLocationsAfterEachCycle.Add(boulderPositions);
+        }
+
+        public bool CheckForDuplicateState(ref int cyclesToReachPatternStart, ref int patternCycleLength)
+        {
+            List<(int row, int column)> mostRecentState = boulderLocationsAfterEachCycle[boulderLocationsAfterEachCycle.Count - 1];
+
+            for (int ii = 0; ii < boulderLocationsAfterEachCycle.Count - 1; ++ii)
+            {
+                List<(int row, int column)> stateToCompare = boulderLocationsAfterEachCycle[ii];
+                bool foundMatch = true;
+                for (int jj = 0; jj < mostRecentState.Count; ++jj)
+                {
+                    if (mostRecentState[jj] != stateToCompare[jj])
+                    {
+                        foundMatch = false;
+                        break;
+                    }    
+                }
+
+                if (foundMatch)
+                {
+                    cyclesToReachPatternStart = ii + 1;
+                    patternCycleLength = boulderLocationsAfterEachCycle.Count - cyclesToReachPatternStart;
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        public ulong LoadOnNorthColumns()
         {
             ulong totalLoad = 0;
 
@@ -171,41 +225,19 @@ namespace AOC.DayFourteen
             return totalLoad;
         }
 
+        public ulong LoadOnNorthColumnsAfterCycles(int numCycles)
+        {
+            // Adjust for 0-indexing of List when we only started populating it after
+            // the first cycle.
+            return northLoadAfterEachCycle[numCycles - 1];
+        }
+
         public void PrintBoulderField()
         {
             foreach (char[] line in rawBoulderField)
             {
                 Console.WriteLine(line);
             }
-        }
-
-        public ulong LoadOnNorthColumns()
-        {
-            ulong load = 0;
-
-            foreach (List<RoundBoulderSlide> boulderSlidesInColumn in boulderSlidesInEachColumn) 
-            {
-                foreach (RoundBoulderSlide slide in boulderSlidesInColumn)
-                {
-                    load += TotalLoadFromSlide(slide);
-                }
-            }
-
-            return load;
-        }
-
-        private ulong TotalLoadFromSlide(RoundBoulderSlide slide)
-        {
-            ulong totalLoad = 0;
-            ulong currentLoad = (ulong)numberOfRows - (ulong)slide.firstBoulderPosition;
-
-            for (int ii = 0; ii < slide.numberOfBoulders; ++ii)
-            {
-                totalLoad += currentLoad;
-                --currentLoad;
-            }
-
-            return totalLoad;
         }
     }
 }
