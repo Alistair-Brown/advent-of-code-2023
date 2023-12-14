@@ -16,6 +16,12 @@ namespace AOC
 
             ulong partOneLoad = boulderField.LoadOnNorthColumns();
 
+            for (int ii = 0; ii < 1000; ++ii)
+            {
+                boulderField.PerformFullCycle();
+                Console.WriteLine(boulderField.LoadOnNorthColumnPartTwo());
+            }
+
             return new PuzzleSolution(partOneLoad.ToString(), "abc");
         }
     }
