@@ -13,12 +13,13 @@ namespace AOC
     {
         public PuzzleSolution SolvePuzzle(string[] puzzleInputLines)
         {
-            CrucibleMap crucibleMapOne = new CrucibleMap(puzzleInputLines);
-            CrucibleMap crucibleMapTwo = new CrucibleMap(puzzleInputLines);
+            CrucibleMap crucibleMapOne = new CrucibleMap(puzzleInputLines, 1, 3);
+            CrucibleMap crucibleMapTwo = new CrucibleMap(puzzleInputLines, 4, 10);
 
             int partOneCheapestRoute = crucibleMapOne.CheapestRoute();
+            int partTwoCheapestRoute = crucibleMapTwo.CheapestRoute();
 
-            return new PuzzleSolution(partOneCheapestRoute.ToString(), "world");
+            return new PuzzleSolution(partOneCheapestRoute.ToString(), partTwoCheapestRoute.ToString());
         }
     }
 }
