@@ -24,25 +24,16 @@ namespace AOC.DayEighteen
             public ulong distance;
         }
 
-        // Any vertex of the complete trench polygon has a position, and a trench going off it in two of the
-        // four cardinal directions.
         struct TrenchVertex
         {
             public ulong row;
             public ulong column;
-
-            public bool up;
-            public bool down;
-            public bool left;
-            public bool right;
         }
 
         List<DigInstruction> digInstructions;
-        SortedList<(ulong row, ulong column), TrenchVertex> trenchVertices;
 
-        // For quicker iteration on the sizing algorithm, we also hold trench vertices according to their columns and rows.
-        // In each case, the list is sorted by the other direction, i.e. in the dict of columns, the list is sorted by rows.
-        Dictionary<ulong, SortedList<ulong, TrenchVertex>> trenchVerticesByColumn;
+        // For quicker iteration on the sizing algorithm, we also hold trench vertices according to their rows.
+        // The inner list is then sorted by column position, so the leftmost vertices appear first.
         SortedList<ulong, SortedList<ulong, TrenchVertex>> trenchVerticesByRow;
 
         public LagoonDigger(string[] rawDigInstructions, bool partTwo)
@@ -81,14 +72,10 @@ namespace AOC.DayEighteen
 
         private void InitialiseTrenchNodes()
         {
-            trenchVertices = new SortedList<(ulong row, ulong column), TrenchVertex>();
-            trenchVerticesByColumn = new Dictionary<ulong, SortedList<ulong, TrenchVertex>>();
             trenchVerticesByRow = new SortedList<ulong, SortedList<ulong, TrenchVertex>>();
 
             ulong totalUp = 0;
-            ulong totalDown = 0;
             ulong totalLeft = 0;
-            ulong totalRight = 0;
 
             foreach (DigInstruction instruction in digInstructions)
             {
@@ -97,25 +84,17 @@ namespace AOC.DayEighteen
                     case Direction.UP:
                         totalUp += instruction.distance;
                         break;
-                    case Direction.DOWN:
-                        totalDown += instruction.distance;
-                        break;
                     case Direction.LEFT:
                         totalLeft += instruction.distance;
                         break;
                     default:
-                        Debug.Assert(instruction.direction == Direction.RIGHT);
-                        totalRight += instruction.distance;
                         break;
                 }
             }
 
             // Place the starting position far enough into the grid that it will never reach above
             // the top or out to the left.
-            // The 'inbound direction' of a given node is the reverse of the direction that was moved
-            // to reach it, since we give node directions relative to that node itself.
             (ulong row, ulong column) currentPosition = (totalUp + 1, totalLeft + 1);
-            Direction inboundDirection = ReverseDirection(digInstructions[digInstructions.Count - 1].direction);
 
             foreach (DigInstruction instruction in digInstructions)
             {
@@ -124,14 +103,8 @@ namespace AOC.DayEighteen
                     row = currentPosition.row,
                     column = currentPosition.column
                 };
-                vertex.up = inboundDirection == Direction.UP || instruction.direction == Direction.UP;
-                vertex.down = inboundDirection == Direction.DOWN || instruction.direction == Direction.DOWN;
-                vertex.left = inboundDirection == Direction.LEFT || instruction.direction == Direction.LEFT;
-                vertex.right = inboundDirection == Direction.RIGHT || instruction.direction == Direction.RIGHT;
 
                 InsertVertex(vertex);
-
-                inboundDirection = ReverseDirection(instruction.direction);
 
                 switch (instruction.direction)
                 {
@@ -268,199 +241,13 @@ namespace AOC.DayEighteen
             }
         }
 
-        public ulong TrenchSizeOld()
-        {
-            ulong size = 0;
-
-            while (trenchVertices.Count > 0)
-            {
-                // Get the two vertices representing the top line of the topmost square making up the complete pattern
-                TrenchVertex topLeftVertex = trenchVertices.Values[0];
-                TrenchVertex topRightVertex = trenchVertices.Values[1];
-
-                RemoveVertex(topLeftVertex);
-                RemoveVertex(topRightVertex);
-
-                // And the two vertices most closely directly below them. At least one of these represents a corner of the square we're
-                // going to remove.
-                TrenchVertex potentialBottomLeftVertex = trenchVerticesByColumn[topLeftVertex.column].Values[0];
-                TrenchVertex potentialBottomRightVertex = trenchVerticesByColumn[topRightVertex.column].Values[0];
-
-                if (potentialBottomLeftVertex.row < potentialBottomRightVertex.row)
-                {
-                    if (potentialBottomLeftVertex.left)
-                    {
-                        size += (topRightVertex.column - topLeftVertex.column + 1) * (potentialBottomLeftVertex.row - topLeftVertex.row);
-
-                        RemoveVertex(potentialBottomLeftVertex);
-
-                        TrenchVertex vertexCreated = new TrenchVertex()
-                        {
-                            row = potentialBottomLeftVertex.row,
-                            column = topRightVertex.column,
-                            up = false,
-                            down = true,
-                            left = true,
-                            right = false
-                        };
-
-                        InsertVertex(vertexCreated);
-                    }
-                    else
-                    {
-                        size += (topRightVertex.column - topLeftVertex.column + 1) * (potentialBottomLeftVertex.row - topLeftVertex.row + 1);
-
-                        RemoveVertex(potentialBottomLeftVertex);
-
-                        TrenchVertex vertexCreated = new TrenchVertex()
-                        {
-                            row = potentialBottomLeftVertex.row + 1,
-                            column = topRightVertex.column,
-                            up = false,
-                            down = true,
-                            left = true,
-                            right = false
-                        };
-
-                        InsertVertex(vertexCreated);
-
-                        // Also need to shift the inner corner down a space
-                        TrenchVertex vertexToMove = FindNextVertexToRight(potentialBottomLeftVertex);
-                        RemoveVertex(vertexToMove);
-                        vertexToMove.left = false;
-                        vertexToMove.right = true;
-                        ++vertexToMove.row;
-                        InsertVertex(vertexToMove);
-                    }
-                }
-                else if (potentialBottomLeftVertex.row > potentialBottomRightVertex.row)
-                {
-                    if (potentialBottomRightVertex.right)
-                    {
-                        size += (topRightVertex.column - topLeftVertex.column + 1) * (potentialBottomRightVertex.row - topRightVertex.row);
-
-                        RemoveVertex(potentialBottomRightVertex);
-
-                        TrenchVertex vertexCreated = new TrenchVertex()
-                        {
-                            row = potentialBottomRightVertex.row,
-                            column = topRightVertex.column,
-                            up = false,
-                            down = true,
-                            left = false,
-                            right = true
-                        };
-
-                        InsertVertex(vertexCreated);
-                    }
-                    else
-                    {
-                        size += (topRightVertex.column - topLeftVertex.column + 1) * (potentialBottomRightVertex.row - topLeftVertex.row + 1);
-
-                        RemoveVertex(potentialBottomRightVertex);
-
-                        TrenchVertex vertexCreated = new TrenchVertex()
-                        {
-                            row = potentialBottomRightVertex.row + 1,
-                            column = topRightVertex.column,
-                            up = false,
-                            down = true,
-                            left = false,
-                            right = true
-                        };
-
-                        InsertVertex(vertexCreated);
-
-                        // Also need to shift the inner corner down a space
-                        TrenchVertex vertexToMove = FindNextVertexToLeft(potentialBottomRightVertex);
-                        RemoveVertex(vertexToMove);
-                        vertexToMove.right = false;
-                        vertexToMove.left = true;
-                        ++vertexToMove.row;
-                        InsertVertex(vertexToMove);
-                    }
-                }
-                else
-                {
-                    if (potentialBottomRightVertex.left && potentialBottomLeftVertex.right)
-                    {
-                        size += (topRightVertex.column - topLeftVertex.column + 1) * (potentialBottomRightVertex.row - topLeftVertex.row + 1);
-
-                        RemoveVertex(potentialBottomLeftVertex);
-                        RemoveVertex(potentialBottomRightVertex);
-
-                        if (!(FindNextVertexToRight(potentialBottomLeftVertex).column == potentialBottomRightVertex.column))
-                        {
-                            // Not a complete square, need to move the inner vertices in
-
-                            // Actually this entire design is bugged, what if we have a portion that's shaped like 
-                            // lower case n?
-                        }
-                    }
-                    else
-                    {
-                        size += (topRightVertex.column - topLeftVertex.column + 1) * (potentialBottomRightVertex.row - topLeftVertex.row + 1);
-
-                        RemoveVertex(potentialBottomLeftVertex);
-                        RemoveVertex(potentialBottomRightVertex);
-                    }
-                }
-            }
-
-            return size;
-        }
-
         private void InsertVertex(TrenchVertex vertex)
         {
-            trenchVertices.Add((vertex.row, vertex.column), vertex);
-
-            if (!trenchVerticesByColumn.ContainsKey(vertex.column))
-            {
-                trenchVerticesByColumn[vertex.column] = new SortedList<ulong, TrenchVertex>();
-            }
-            trenchVerticesByColumn[vertex.column].Add(vertex.row, vertex);
-
             if (!trenchVerticesByRow.ContainsKey(vertex.row))
             {
                 trenchVerticesByRow[vertex.row] = new SortedList<ulong, TrenchVertex>();
             }
             trenchVerticesByRow[vertex.row].Add(vertex.column, vertex);
-        }
-
-        private void RemoveVertex(TrenchVertex vertex)
-        {
-            trenchVertices.Remove((vertex.row, vertex.column));
-            trenchVerticesByColumn[vertex.column].Remove(vertex.row);
-            trenchVerticesByRow[vertex.row].Remove(vertex.column);
-        }
-
-        private TrenchVertex FindNextVertexToRight(TrenchVertex vertexIn)
-        {
-            foreach (TrenchVertex vertex in trenchVerticesByRow[vertexIn.row].Values)
-            {
-                if (vertex.column > vertexIn.column)
-                {
-                    return vertex;
-                }
-            }
-
-            Debug.Assert(false, "Should never fail to find a vertex");
-            return vertexIn;
-        }
-
-        private TrenchVertex FindNextVertexToLeft(TrenchVertex vertexIn)
-        {
-            for (int ii = trenchVerticesByRow[vertexIn.row].Values.Count - 1; ii >= 0; --ii)
-            {
-                TrenchVertex vertex = trenchVerticesByRow[vertexIn.row].Values[ii];
-                if (vertex.column < vertexIn.column)
-                {
-                    return vertex;
-                }
-            }
-
-            Debug.Assert(false, "Should never fail to find a vertex");
-            return vertexIn;
         }
 
         private Direction DirectionFromChar(string character)
@@ -477,22 +264,6 @@ namespace AOC.DayEighteen
                 default:
                     Debug.Assert(character[0] == 'R');
                     return Direction.RIGHT;
-            }
-        }
-
-        private Direction ReverseDirection(Direction direction)
-        {
-            switch (direction)
-            {
-                case Direction.UP:
-                    return Direction.DOWN;
-                case Direction.DOWN:
-                    return Direction.UP;
-                case Direction.LEFT:
-                    return Direction.RIGHT;
-                default:
-                    Debug.Assert(direction == Direction.RIGHT);
-                    return Direction.LEFT;
             }
         }
     }
