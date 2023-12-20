@@ -65,32 +65,23 @@ namespace AOC.DaySeventeen
 
         public int CheapestRoute()
         {
-            SortedList<(int cost, int row, int column, int nSteps, int sSteps, int eSteps, int wSteps), (CrucibleMapNode, List<Direction>)> nodesToExploreFrom =
-                new SortedList<(int cost, int row, int column, int nSteps, int sSteps, int eSteps, int wSteps), (CrucibleMapNode, List<Direction>)>();
+            SortedList<(int cost, int row, int column, int nSteps, int sSteps, int eSteps, int wSteps), CrucibleMapNode> nodesToExploreFrom =
+                new SortedList<(int cost, int row, int column, int nSteps, int sSteps, int eSteps, int wSteps), CrucibleMapNode>();
 
             CrucibleMapNode startingNode = mapToTraverse[0][0];
-            nodesToExploreFrom.Add((0, 0, 0, 0, 0, 0, 0), (startingNode, new List<Direction>()));
+            nodesToExploreFrom.Add((0, 0, 0, 0, 0, 0, 0), startingNode);
 
             bool foundExit = false;
             int cheapestRoute = 0;
             while (nodesToExploreFrom.Count > 0)
             {
-                CrucibleMapNode currentNode = nodesToExploreFrom.Values[0].Item1;
-                List<Direction> stepsTaken = nodesToExploreFrom.Values[0].Item2;
+                CrucibleMapNode currentNode = nodesToExploreFrom.Values[0];
                 (int cost, int row, int column, int nSteps, int sSteps, int eSteps, int wSteps) currentKey = nodesToExploreFrom.Keys[0];
                 nodesToExploreFrom.RemoveAt(0);
 
                 if ((currentNode.rowPos == mapToTraverse.Length - 1) &&
                     (currentNode.columnPos == mapToTraverse[0].Length - 1))
                 {
-                    if ((currentKey.eSteps > 0 && currentKey.eSteps < minSteps) ||
-                        (currentKey.wSteps > 0 && currentKey.wSteps < minSteps) ||
-                        (currentKey.nSteps > 0 && currentKey.nSteps < minSteps) ||
-                        (currentKey.sSteps > 0 && currentKey.sSteps < minSteps))
-                    {
-                        continue;
-                    }
-
                     cheapestRoute = currentKey.cost;
                     foundExit = true;
                     break;
@@ -116,16 +107,13 @@ namespace AOC.DaySeventeen
                     {
                         nextNode.lowestCostToReachFromDifferentDirectionsAndSteps[index] = nextCost;
 
-                        List<Direction> nextStepsTaken = new List<Direction>(stepsTaken);
-                        nextStepsTaken.Add(Direction.North);
-
                         nodesToExploreFrom.Add(
                             (nextCost, nextNode.rowPos, nextNode.columnPos,
                             currentKey.nSteps + 1,
                             0,
                             0,
                             0),
-                            (nextNode, nextStepsTaken));
+                            nextNode);
                     }
                 }
 
@@ -149,16 +137,13 @@ namespace AOC.DaySeventeen
                     {
                         nextNode.lowestCostToReachFromDifferentDirectionsAndSteps[index] = nextCost;
 
-                        List<Direction> nextStepsTaken = new List<Direction>(stepsTaken);
-                        nextStepsTaken.Add(Direction.South);
-
                         nodesToExploreFrom.Add(
                             (nextCost, nextNode.rowPos, nextNode.columnPos,
                             0,
                             currentKey.sSteps + 1,
                             0,
                             0),
-                            (nextNode, nextStepsTaken));
+                            nextNode);
                     }
                 }
 
@@ -182,16 +167,13 @@ namespace AOC.DaySeventeen
                     {
                         nextNode.lowestCostToReachFromDifferentDirectionsAndSteps[index] = nextCost;
 
-                        List<Direction> nextStepsTaken = new List<Direction>(stepsTaken);
-                        nextStepsTaken.Add(Direction.East);
-
                         nodesToExploreFrom.Add(
                             (nextCost, nextNode.rowPos, nextNode.columnPos,
                             0,
                             0,
                             currentKey.eSteps + 1,
                             0),
-                            (nextNode, nextStepsTaken));
+                            nextNode);
                     }
                 }
 
@@ -215,16 +197,13 @@ namespace AOC.DaySeventeen
                     {
                         nextNode.lowestCostToReachFromDifferentDirectionsAndSteps[index] = nextCost;
 
-                        List<Direction> nextStepsTaken = new List<Direction>(stepsTaken);
-                        nextStepsTaken.Add(Direction.West);
-
                         nodesToExploreFrom.Add(
                             (nextCost, nextNode.rowPos, nextNode.columnPos,
                             0,
                             0,
                             0,
                             currentKey.wSteps + 1),
-                            (nextNode, nextStepsTaken));
+                            nextNode);
                     }
                 }
             }
