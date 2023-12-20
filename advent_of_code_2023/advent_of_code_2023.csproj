@@ -78,6 +78,9 @@
     <Compile Include="Source\Day18\LagoonDigger.cs" />
     <Compile Include="Source\Day19\DayNineteenSolver.cs" />
     <Compile Include="Source\Day19\PartSorter.cs" />
+    <Compile Include="Source\Day20\CommunicationModule.cs" />
+    <Compile Include="Source\Day20\CommunicationNetwork.cs" />
+    <Compile Include="Source\Day20\DayTwentySolver.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -106,6 +109,7 @@
     <Content Include="puzzle_inputs\puzzle_input_17.txt" />
     <Content Include="puzzle_inputs\puzzle_input_18.txt" />
     <Content Include="puzzle_inputs\puzzle_input_19.txt" />
+    <Content Include="puzzle_inputs\puzzle_input_20.txt" />
     <Content Include="puzzle_inputs\puzzle_input_sratch_space.txt" />
     <Content Include="puzzle_inputs\puzzle_input_08.txt" />
     <Content Include="puzzle_inputs\test_puzzle_input.txt" />
