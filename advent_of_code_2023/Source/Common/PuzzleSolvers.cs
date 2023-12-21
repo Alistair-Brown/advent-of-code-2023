@@ -16,7 +16,7 @@ namespace AOC
         public const string puzzleInputFileStem = "puzzle_input_";
         public const string puzzleInputExtension = ".txt";
 
-        public const int numberOfSolvers = 20;
+        public const int numberOfSolvers = 21;
         static public IPuzzleSolver[] puzzleSolvers = new IPuzzleSolver[numberOfSolvers] {
             new DayOneSolver(),
             new DayTwoSolver(),
@@ -37,6 +37,7 @@ namespace AOC
             new DaySeventeenSolver(),
             new DayEighteenSolver(),
             new DayNineteenSolver(),
-            new DayTwentySolver()};
+            new DayTwentySolver(),
+            new DayTwentyOneSolver()};
     }
 }

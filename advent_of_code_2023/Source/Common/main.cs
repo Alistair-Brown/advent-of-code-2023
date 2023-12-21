@@ -18,14 +18,7 @@ namespace AOC
                 TimeSpan totalTime = new TimeSpan(0);
                 foreach (int day in Enumerable.Range(1, PuzzleSolvers.numberOfSolvers))
                 {
-                    if (day == 17)
-                    {
-                        Console.WriteLine("Skipping day 17 from 'all' loop, takes too long");
-                    }
-                    else
-                    {
-                        totalTime += SolveDayAndPrintSolution(day);
-                    }
+                    totalTime += SolveDayAndPrintSolution(day);
                 }
                 Console.WriteLine($"Total time: {totalTime.Seconds}s {totalTime.Milliseconds}ms");
             }

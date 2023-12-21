@@ -9,6 +9,9 @@ using AOC.DaySeventeen;
 
 namespace AOC
 {
+    // Pretty sure I could get a good speed up on this day by not storing the intermediate steps on the way to the minimum
+    // steps, and jumping straight up to the minimum when we change direction. Would reduce the number of different approach
+    // cases each node has to store, and reduce the total number of iterations through the algorithm.
     internal class DaySeventeenSolver : IPuzzleSolver
     {
         public PuzzleSolution SolvePuzzle(string[] puzzleInputLines)
