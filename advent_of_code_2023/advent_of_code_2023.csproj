@@ -83,6 +83,8 @@
     <Compile Include="Source\Day20\DayTwentySolver.cs" />
     <Compile Include="Source\Day21\DayTwentyOneSolver.cs" />
     <Compile Include="Source\Day21\GardenMap.cs" />
+    <Compile Include="Source\Day22\DayTwentyTwoSolver.cs" />
+    <Compile Include="Source\Day22\SandJenga.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -113,6 +115,7 @@
     <Content Include="puzzle_inputs\puzzle_input_19.txt" />
     <Content Include="puzzle_inputs\puzzle_input_20.txt" />
     <Content Include="puzzle_inputs\puzzle_input_21.txt" />
+    <Content Include="puzzle_inputs\puzzle_input_22.txt" />
     <Content Include="puzzle_inputs\puzzle_input_sratch_space.txt" />
     <Content Include="puzzle_inputs\puzzle_input_08.txt" />
     <Content Include="puzzle_inputs\test_puzzle_input.txt" />
