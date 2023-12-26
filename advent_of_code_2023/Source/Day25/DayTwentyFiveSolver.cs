@@ -5,13 +5,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using AOC.DayTwentyFive;
+
 namespace AOC
 {
     internal class DayTwentyFiveSolver : IPuzzleSolver
     {
         public PuzzleSolution SolvePuzzle(string[] puzzleInputLines)
         {
-            return new PuzzleSolution("Hello", "World");
+            ComponentJumble jumble = new ComponentJumble(puzzleInputLines);
+            int partOneProduct = jumble.ProductOfCutConnections();
+
+            return new PuzzleSolution(partOneProduct.ToString(), "World");
         }
     }
 }

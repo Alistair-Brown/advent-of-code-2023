@@ -89,6 +89,7 @@
     <Compile Include="Source\Day23\HikingTrails.cs" />
     <Compile Include="Source\Day24\DayTwentyFourSolver.cs" />
     <Compile Include="Source\Day24\Hailstorm.cs" />
+    <Compile Include="Source\Day25\ComponentJumble.cs" />
     <Compile Include="Source\Day25\DayTwentyFiveSolver.cs" />
   </ItemGroup>
   <ItemGroup>
