@@ -16,8 +16,9 @@ namespace AOC
             Hailstorm hailstorm = new Hailstorm(puzzleInputLines);
 
             int partOneIntersections = hailstorm.NumberOfIntersections(200000000000000, 400000000000000);
+            long partTwoPositionSum = hailstorm.PartTwoPositionSumNew();
 
-            return new PuzzleSolution(partOneIntersections.ToString(), "World");
+            return new PuzzleSolution(partOneIntersections.ToString(), partTwoPositionSum.ToString());
         }
     }
 }
